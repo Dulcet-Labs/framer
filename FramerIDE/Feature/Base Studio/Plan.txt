@@ -1,0 +1,2 @@
+Base Account to get into the Development Env for Base.
+Mini App, Smart ocntract

@@ -1,0 +1,43 @@
+Since you are in "Grant Mode" and need to record a video **today**, here is the honest breakdown.
+
+### **The "Video-Ready" MVP**
+**Difficulty:** 2/10 (Easy)
+**Time:** **1.5 to 3 Hours**
+
+You are not building the full engine yet. You are building the **Interface** that loads `localhost`.
+
+Here is exactly how those 3 hours are spent:
+
+1.  **Setup & Scaffolding (15 Mins):**
+    *   Running `yo code`.
+    *   Cleaning up the generated files.
+    *   Copying the code I gave you earlier.
+
+2.  **The "Webview" Logic (45 Mins):**
+    *   This is the code that tells VS Code "Hey, put this HTML in the sidebar."
+    *   You might hit one error here regarding "Content Security Policy" (VS Code is strict about loading scripts), but fixing it usually just means adding one line of code to the HTML head.
+
+3.  **Styling the "Phone" (30 Mins):**
+    *   Writing the CSS so the iframe looks like a sexy iPhone or Android.
+    *   Adding the blue "Base" header so it looks branded.
+    *   **Pro Tip:** Don't spend too long here. Just make it look clean.
+
+4.  **Recording & Editing (30 Mins):**
+    *   Running the extension.
+    *   Typing code, hitting save, watching it update.
+    *   Retaking the video a few times to make it smooth.
+
+---
+
+### **The One "Gotcha" (The only hard part)**
+**Iframe Permissions (X-Frame-Options)**
+*   Some websites (like Google or Twitter) block themselves from being loaded inside an iframe.
+*   **Your Solution for the Video:** Do NOT try to load `google.com`. Load your own local `Next.js` app (`localhost:3000`). Since you control the local app, it will load perfectly.
+
+### **Can you do it tonight?**
+**YES.**
+If you start now (it is 4 AM in Lagos, so maybe after you sleep or right now if you are grinding), you can have the video posted on Warpcast by noon.
+
+**Do you have VS Code installed and `Node.js` ready?**
+If yes, run this command immediately and you are 5% done:
+`npm install -g yo generator-code`

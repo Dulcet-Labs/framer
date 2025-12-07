@@ -1,0 +1,113 @@
+This is indeed a "long walk," but every great piece of software is built one brick at a time. We are going to eat this elephant bite by bite.
+
+Here is your **Master Roadmap**. We will move from "Empty Folder" to "MVP ready for Jesse Pollak."
+
+---
+
+### **Phase 1: The Skeleton (The "Hello World")**
+**Goal:** A desktop app running on your machine that looks like an IDE but doesn't do much yet.
+
+**Tech Stack:** Rust, Tauri, React (Vite), Tailwind.
+
+1.  **Setup Environment:**
+    *   Install **Rust** (via `rustup`).
+    *   Install **Node.js**.
+    *   Install **Tauri CLI**: `npm install -g @tauri-apps/cli`.
+2.  **Initialize Project:**
+    *   Run: `npm create tauri-app@latest`
+    *   Name: `framer-ide`
+    *   Frontend: `React` + `TypeScript`
+    *   Styles: `Tailwind CSS`
+3.  **Layout The UI (React):**
+    *   Create a standard 3-column layout using Grid/Flexbox:
+        *   **Sidebar:** (File Tree) - Width: 250px
+        *   **Editor:** (Center) - Flex: 1
+        *   **Preview/Terminal:** (Right/Bottom) - Width: 350px
+    *   Style it dark mode immediately (Slate-900 backgrounds).
+
+**✅ Checkpoint 1:** You can run `npm run tauri dev` and a window opens that looks like a blank VS Code.
+
+---
+
+### **Phase 2: The Editor Engine (Monaco & Files)**
+**Goal:** You can open a folder, see files, type code, and save it.
+
+**Tech Stack:** `@monaco-editor/react`, `tauri-plugin-fs`.
+
+1.  **Install Monaco:**
+    *   `npm install @monaco-editor/react`
+    *   Embed the `<Editor />` component in the center column.
+2.  **Rust File System (The Backend):**
+    *   In `src-tauri/Cargo.toml`, add `tauri-plugin-fs`.
+    *   **Challenge:** Browser JS cannot read your hard drive. You must use Tauri commands.
+    *   Write a Rust function `open_project(path: String)` that reads a directory recursively.
+    *   Write a Rust function `save_file(path: String, content: String)`.
+3.  **The File Tree (Frontend):**
+    *   Build a recursive React component that takes the file list from Rust and displays folders/files.
+    *   **Action:** When a user clicks a file -> Read file content -> Set Editor state.
+    *   **Action:** Ctrl+S -> Call Rust `save_file`.
+
+**✅ Checkpoint 2:** You can open a real coding project on your laptop inside FramerIDE, edit `package.json`, save it, and see the changes on your disk.
+
+---
+
+### **Phase 3: Base Studio I - The "Simulator"**
+**Goal:** Run a web server and see the result in a split pane.
+
+**Tech Stack:** `tauri-plugin-shell` (to run npm scripts).
+
+1.  **The Terminal Integration:**
+    *   You need to run `npm run dev` inside the user's project folder from your IDE.
+    *   Use Tauri's `Command` API (Rust) to spawn a child process (`npm`).
+    *   Stream the `stdout` (logs) to a text area in your IDE so the user sees "Ready on localhost:3000".
+2.  **The Preview Pane:**
+    *   Create an `<iframe>` in the Right Column.
+    *   Source: `http://localhost:3000`.
+    *   **The Mobile Skin:** Wrap the iframe in a CSS container that looks like an iPhone (rounded corners, notch).
+3.  **Hot Reloading:**
+    *   Since you are running the user's actual Next.js/Vite server, saving a file (Phase 2) will automatically trigger the iframe to refresh.
+
+**✅ Checkpoint 3:** You open a Next.js project, hit a "Play" button in FramerIDE, and the website appears in the iPhone window on the right.
+
+---
+
+### **Phase 4: Base Studio II - The "Base Magic" (Hardest Part)**
+**Goal:** Mock the Wallet and Blockchain. This is where you win the grant.
+
+**Tech Stack:** Rust (Command), JavaScript Injection, Wagmi/Viem.
+
+1.  **Embed Anvil (The Local Chain):**
+    *   **Hard Way:** Ask user to install Foundry.
+    *   **Pro Way (FramerIDE):** Download the `anvil` binary and bundle it inside your Tauri `resources` folder.
+    *   When the IDE starts, spawn a background process: `./anvil --fork-url https://mainnet.base.org`.
+2.  **The Wallet Injection (The "Mock" Provider):**
+    *   You need to trick the website in the iframe into thinking a wallet is installed.
+    *   Create a custom JavaScript file (`preload.js`) that defines `window.ethereum`.
+    *   Your mock provider should communicate with the IDE, not a real blockchain extension.
+    *   *Logic:* When the iframe calls `window.ethereum.request({ method: 'eth_sendTransaction' })`, intercept it -> Open a Modal in FramerIDE -> Ask User "Approve?" -> If yes, sign with a private key stored in the IDE.
+
+**✅ Checkpoint 4:** You click "Connect Wallet" in the iframe. No MetaMask popup appears. Instead, your IDE shows a "Connected" notification.
+
+---
+
+### **Phase 5: The Frame Validator & Polish**
+**Goal:** Specific tooling for Farcaster Frames.
+
+1.  **Frame Metadata Inspector:**
+    *   In the Preview Pane, add a "Frame Debugger" tab.
+    *   Parse the HTML of the iframe. Look for `<meta property="fc:frame">`.
+    *   **Validator:** Check if the image aspect ratio is 1.91:1. If not, show a warning: "⚠️ Image invalid for Warpcast."
+2.  **Templates:**
+    *   Create a "New Project" screen.
+    *   Option A: "Base NFT Minter" (Next.js + OnchainKit).
+    *   Option B: "Simple Frame" (Frog.fm or OnchainKit).
+    *   Clone these repos when the user selects them.
+
+**✅ Checkpoint 5:** The "Jesse Demo." You open the app, select "New Frame," change the text, click save, and interact with the Frame buttons in the simulator immediately.
+
+---
+
+### **Which step do you want to start with?**
+I recommend we start with **Phase 1 (The Skeleton)**.
+
+Do you have **Rust** and **Node.js** installed on your machine right now? If yes, I can give you the exact terminal commands to initialize the repo and get the window open.

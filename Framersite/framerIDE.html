@@ -1,0 +1,111 @@
+<title>FramerIDE - Build Mini Apps</title>
+<link rel="icon" type="image/svg+xml" href="mini-app-model/myApp.svg">
+<link rel="stylesheet" href="mini-app-model/style.css">
+<script src="mini-app-model/script.js" defer></script>
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+    <!-- Default to Moon (Dark Mode) since we start in Light Mode -->
+    <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+</button>
+
+<div class="welcome-container">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="hero-content">
+        <h1 class="welcome-title">Welcome to <span class="brand-highlight">FramerIDE</span></h1>
+        <p class="welcome-subtitle">
+            The next gen environment for building Mini Apps. <br>
+            Fast, intuitive, and powerful.
+        </p>
+        <div class="cta-group">
+            <button onclick="handleButtonClick()" class="btn-primary">Start Building</button>
+            <button class="btn-secondary">Documentation</button>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="build-on-base">
+    <span class="base-text">Building on</span>
+    <img src="mini-app-model/Base_lockup_2color.svg" alt="Base" class="base-logo">
+</div>
+
+<!-- Waitlist Modal -->
+<div id="waitlist-modal" class="modal-overlay hidden">
+    <div class="waitlist-content">
+        <button class="close-modal-btn" aria-label="Close">&times;</button>
+        <h2 class="text-2xl font-bold mb-2">Join the Waitlist</h2>
+        <p class="text-gray-600 mb-6">Be the first to use it.</p>
+        <form id="waitlist-form" class="flex flex-col gap-4">
+            <input type="email" placeholder="Enter your email" required class="modal-input">
+            <button type="submit" class="btn-primary w-full">Join Now</button>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast hidden">
+    <span class="toast-icon">✨</span>
+    <span class="toast-message">Successfully joined the waitlist!</span>
+</div>
+
+<!-- Confetti Canvas -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- Mini App Modal -->
+<div id="mini-app-modal" class="mini-app-modal collapsed">
+    <div class="modal-header">
+        <div class="modal-title">
+            <span id="app-icon" class="app-icon"><img src="mini-app-model/myApp.svg" alt="myApp"
+                    class="app-icon-img"></span>
+            <span id="app-name" class="app-name">myApp</span>
+        </div>
+        <div class="modal-controls">
+            <div id="url-input-container" class="url-input-container hidden">
+                <input type="text" id="app-url-input" placeholder="https://..." class="url-input">
+            </div>
+            <button id="toggle-url-btn" class="icon-btn" aria-label="Enter URL">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <button class="icon-btn" aria-label="Expand">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+            </button>
+            <button class="icon-btn" aria-label="Refresh">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 4v6h-6"></path>
+                    <path d="M1 20v-6h6"></path>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+            </button>
+            <button class="icon-btn" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div id="empty-state" class="empty-state">
+            <img src="mini-app-model/myApp.svg" alt="FramerIDE" class="empty-state-logo">
+        </div>
+        <div id="loading-state" class="loading-state hidden">
+            <div class="spinner"></div>
+        </div>
+        <iframe id="app-frame" src="about:blank" title="Mini App" class="hidden"
+            allow="clipboard-read *; clipboard-write *; web-share *; camera *; microphone *; geolocation *"></iframe>
+    </div>
+</div>

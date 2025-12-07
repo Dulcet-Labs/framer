@@ -1,0 +1,186 @@
+/* Wallet Specific Styles */
+body {
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+}
+
+.balance-card {
+    background: linear-gradient(135deg, #0055FF, #0033CC);
+    color: white;
+    padding: 32px 24px;
+    border-radius: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0, 85, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.balance-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.balance-label {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.balance-amount {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+    width: 100%;
+    /* Ensure full width */
+}
+
+/* Hide Scrollbar */
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    border-radius: 16px;
+    padding: 8px 4px;
+    gap: 4px;
+    border: 1px solid var(--color-border);
+    transition: transform 0.1s;
+}
+
+.action-btn:active {
+    transform: scale(0.96);
+    background: var(--color-surface-hover);
+}
+
+.action-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+}
+
+.action-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.token-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 32px;
+    /* Moved up slightly */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-surface);
+    padding: 18px 0;
+    /* Reduced padding */
+    width: 90%;
+    max-width: 380px;
+    border-radius: 24px;
+    /* Rounder */
+    display: flex;
+    justify-content: space-evenly;
+    /* Even spacing */
+    align-items: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    /* Stronger shadow */
+    border: 1px solid var(--color-border);
+    z-index: 100;
+}
+
+.nav-item {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    transition: all 0.2s;
+}
+
+.nav-item.active {
+    background: transparent;
+    color: var(--color-text-primary);
+    transform: scale(1.1);
+}
+
+/* Connect Button */
+.btn-connect {
+    background: var(--color-text-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Rounded Rectangle Avatar */
+.avatar-squircle {
+    border-radius: 12px !important;
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}

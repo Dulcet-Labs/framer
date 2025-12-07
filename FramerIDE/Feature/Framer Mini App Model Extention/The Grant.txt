@@ -1,0 +1,91 @@
+This is the final step. To get a grant **today** (or at least get the attention needed for one), you need to position this not just as a "tool" but as **critical infrastructure** that speeds up every other developer on Base.
+
+Here is your complete **Grant Application Kit**.
+
+You can use this text for **Base Grants**, **Builder Grants (Prop House)**, or just DMing it to Jesse Pollak on Warpcast.
+
+---
+
+### 🧱 Part 1: The One-Liner (The Hook)
+**Title:** Base Frame Preview (VS Code Extension)
+**Tagline:** Bringing the Mobile/Onchain Simulator directly inside VS Code to eliminate context switching for Builders. 🔵
+
+---
+
+### 📄 Part 2: The Written Application (Copy & Paste)
+
+**1. The Problem:**
+Building Farcaster Frames and Base Mini Apps currently requires a fragmented workflow. A developer has to juggle their code editor, a browser window (localhost), a browser wallet extension, and often a mobile simulator. This constant context switching kills flow and slows down the iteration loop. Web2 devs have live previews; Web3 devs are still alt-tabbing.
+
+**2. The Solution:**
+**Base Frame Preview** is a lightweight VS Code extension that embeds a mobile-first simulator directly into the developer's sidebar.
+*   **Instant Feedback:** See your Frame/Mini App update in real-time as you type code.
+*   **Mobile-First Environment:** Forces developers to build for the mobile screen constraint from Day 1.
+*   **Zero Setup:** No external apps. It simply renders your `localhost` inside a controlled environment.
+
+**3. Current Status (MVP):**
+We have shipped the V1 Alpha. It successfully renders local Next.js/Vite environments inside a mobile skin within the VS Code sidebar.
+*   [Link to GitHub Repo]
+*   [Link to Demo Video]
+
+**4. Roadmap & Grant Usage (The Ask):**
+We are requesting **[Insert Amount, e.g., 2 ETH or $5,000 USDC]** to build the "Killer Features":
+1.  **Wallet Injection:** Inject a mock `window.ethereum` provider so devs can test "Connect Wallet" and "Sign Message" flows without leaving VS Code.
+2.  **Frame Validator:** A built-in linter that warns if Frame images or metadata don't meet Farcaster specs.
+3.  **OnchainKit Snippets:** Drag-and-drop UI components specifically for Base.
+
+**5. Why Us?**
+We are builders solving our own pain. We realized that to onboard the next million builders to Base, the tooling needs to be as frictionless as standard web development.
+
+---
+
+### 🎥 Part 3: The Video Script (Crucial)
+You need to record a 45-second video of your screen. Do not talk about your feelings; show the product.
+
+**Scene 1 (0:00 - 0:10): The Pain**
+*   *Visual:* Show yourself typing code, hitting save, Alt-Tabbing to Chrome, refreshing, realizing it looks bad, Alt-Tabbing back.
+*   *Voiceover:* "Building on Base is amazing, but the workflow is broken. Stop switching windows 500 times a day."
+
+**Scene 2 (0:10 - 0:30): The Solution**
+*   *Visual:* Open VS Code. Click your Extension Icon. The Mobile Simulator slides out. You type `<h1>Hello Base</h1>`, hit save, and it updates instantly in the sidebar.
+*   *Voiceover:* "Introducing Base Frame Preview. A native VS Code extension that puts your simulator right next to your code. Real-time updates. Mobile-first view. Zero setup."
+
+**Scene 3 (0:30 - 0:45): The Ask**
+*   *Visual:* Show a "Connect Wallet" button (even if it doesn't work perfectly yet).
+*   *Voiceover:* "We've built the MVP. We are applying for a Base Builder Grant to add native Wallet Injection and Frame Validation. Let's speed up the Superchain. 🔵"
+
+---
+
+### 🚀 Part 4: Where to Apply (Do this NOW)
+
+Since you want to move fast, don't wait for a formal "Grant Round" on a slow website. Go where the attention is.
+
+**Strategy A: The Warpcast Launch (Highest Success Rate)**
+1.  Upload your video to Warpcast.
+2.  **Text:**
+    > Building tools to make @base devs faster. ⚡️
+    >
+    > I got tired of Alt-Tabbing, so I built a VS Code Simulator for Frames & Mini Apps.
+    >
+    > MVP is live. 🛠️
+    >
+    > We are looking for a micro-grant to add native Wallet Injection + OnchainKit support.
+    >
+    > cc @jessepollak @base @dwr
+    >
+    > (GitHub link in replies)
+3.  **Crucial:** If you are Nigerian, own it. The Base community loves the Nigerian dev energy. Add a flag 🇳🇬 or mention "Building from Lagos."
+
+**Strategy B: Base Grants (Official)**
+*   Go to **grants.base.org**.
+*   Look for "Builder Grants" or "Tooling."
+*   Paste the text from **Part 2** above.
+
+**Strategy C: Devfolio / DoraHacks (Hackathons)**
+*   Check if there is an active "Base Hackathon" (there almost always is).
+*   Submit this project. Hackathon wins are often easier to get than direct grants and pay out $1k-$5k quickly.
+
+### 💡 Final Tip
+If you post the video on Warpcast, **send me the link** (or paste the text here first). I will double-check it for "vibes."
+
+**Go record that screen!** 🔵

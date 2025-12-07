@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FramerIDE UIKit Book</title>
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="tokens.css">
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="components.css">
+
+    <style>
+        /* Documentation Layout - Apple HIG Style */
+        :root {
+            --doc-sidebar-width: 280px;
+            --doc-header-height: 60px;
+            --doc-bg: #ffffff;
+            --doc-text: #1d1d1f;
+            --doc-text-secondary: #86868b;
+            --doc-border: #d2d2d7;
+            --doc-code-bg: #f5f5f7;
+        }
+
+        body {
+            background-color: var(--doc-bg);
+            color: var(--doc-text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            /* Main body doesn't scroll, children do */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Sidebar */
+        .doc-sidebar {
+            width: var(--doc-sidebar-width);
+            height: 100%;
+            border-right: 1px solid var(--doc-border);
+            overflow-y: auto;
+            padding: 40px 24px;
+            flex-shrink: 0;
+            background: #fafafa;
+        }
+
+        .doc-brand {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doc-nav-group {
+            margin-bottom: 32px;
+        }
+
+        .doc-nav-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--doc-text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .doc-nav-link {
+            display: block;
+            font-size: 14px;
+            color: var(--doc-text);
+            text-decoration: none;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+
+        .doc-nav-link:hover {
+            color: var(--color-accent);
+        }
+
+        .doc-nav-link.active {
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        /* Main Content */
+        .doc-main {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 60px 80px;
+            scroll-behavior: smooth;
+        }
+
+        .doc-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .doc-header {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--doc-border);
+            padding-bottom: 40px;
+        }
+
+        .doc-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .doc-subtitle {
+            font-size: 24px;
+            color: var(--doc-text-secondary);
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        /* Section Styling */
+        .doc-section {
+            margin-bottom: 80px;
+            scroll-margin-top: 40px;
+        }
+
+        .doc-section-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .doc-section-desc {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--doc-text-secondary);
+            margin-bottom: 32px;
+        }
+
+        /* Component Preview Card */
+        .preview-card {
+            border: 1px solid var(--doc-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: #fff;
+        }
+
+        .preview-area {
+            padding: 60px;
+            background: #fbfbfd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--doc-border);
+        }
+
+        .preview-area.full {
+            padding: 0;
+            display: block;
+        }
+
+        .code-area {
+            padding: 20px;
+            background: #f5f5f7;
+            overflow-x: auto;
+        }
+
+        .code-block {
+            font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+        }
+
+        /* Color Grid */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .color-item {
+            border: 1px solid var(--doc-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .color-preview {
+            height: 100px;
+            width: 100%;
+        }
+
+        .color-info {
+            padding: 12px;
+            font-family: "SF Mono", monospace;
+            font-size: 12px;
+        }
+
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .color-var {
+            color: var(--doc-text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <nav class="doc-sidebar">
+        <div class="doc-brand">
+            <div style="width: 24px; height: 24px; background: black; border-radius: 6px;"></div>
+            UIKit
+        </div>
+
+        <div class="doc-nav-group">
+            <div class="doc-nav-title">Foundations</div>
+            <a href="#colors" class="doc-nav-link">Colors</a>
+            <a href="#typography" class="doc-nav-link">Typography</a>
+            <a href="#layout" class="doc-nav-link">Layout</a>
+        </div>
+
+        <div class="doc-nav-group">
+            <div class="doc-nav-title">Components</div>
+            <a href="#buttons" class="doc-nav-link">Buttons</a>
+            <a href="#inputs" class="doc-nav-link">Inputs</a>
+            <a href="#lists" class="doc-nav-link">Lists</a>
+            <a href="#cards" class="doc-nav-link">Cards</a>
+            <a href="#animations" class="doc-nav-link">Animations & Loading</a>
+            <a href="#profile" class="doc-nav-link">Profile</a>
+            <a href="#modals" class="doc-nav-link">Modals & Sheets</a>
+            <a href="#navigation" class="doc-nav-link">Navigation</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="doc-main">
+        <div class="doc-content">
+
+            <header class="doc-header">
+                <h1 class="doc-title">Design System</h1>
+                <p class="doc-subtitle">A comprehensive guide to the FramerIDE visual language. Simple, mobile-first,
+                    and native-feeling.</p>
+            </header>
+
+            <!-- Colors -->
+            <section id="colors" class="doc-section">
+                <h2 class="doc-section-title">Colors</h2>
+                <p class="doc-section-desc">Our semantic color palette adapts automatically to light and dark modes.</p>
+
+                <div class="color-grid">
+                    <div class="color-item">
+                        <div class="color-preview" style="background: var(--color-accent);"></div>
+                        <div class="color-info">
+                            <div class="color-name">Accent</div>
+                            <div class="color-var">--color-accent</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-preview"
+                            style="background: var(--color-background); border-bottom: 1px solid #eee;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Background</div>
+                            <div class="color-var">--color-background</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-preview" style="background: var(--color-surface);"></div>
+                        <div class="color-info">
+                            <div class="color-name">Surface</div>
+                            <div class="color-var">--color-surface</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-preview" style="background: var(--color-text-primary);"></div>
+                        <div class="color-info">
+                            <div class="color-name">Text Primary</div>
+                            <div class="color-var">--color-text-primary</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Typography -->
+            <section id="typography" class="doc-section">
+                <h2 class="doc-section-title">Typography</h2>
+                <p class="doc-section-desc">We use the system font stack (San Francisco on iOS) for maximum legibility
+                    and native feel.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area" style="display: block; text-align: left;">
+                        <h1>Large Title</h1>
+                        <h2>Headline</h2>
+                        <h3>Subheadline</h3>
+                        <p>Body text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                            incididunt ut labore.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Buttons -->
+            <section id="buttons" class="doc-section">
+                <h2 class="doc-section-title">Buttons</h2>
+                <p class="doc-section-desc">Standard interactive elements. Buttons are full-width by default on mobile.
+                </p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div style="display: flex; gap: 16px; width: 100%; max-width: 400px; flex-direction: column;">
+                            <button class="btn">Primary Button</button>
+                            <button class="btn btn-secondary">Secondary Button</button>
+                            <button class="btn btn-ghost">Ghost Button</button>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;button class="btn"&gt;Primary&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inputs -->
+            <section id="inputs" class="doc-section">
+                <h2 class="doc-section-title">Inputs</h2>
+                <p class="doc-section-desc">Form controls for data entry.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 16px;">
+                            <input type="text" class="input" placeholder="Username">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>Toggle Option</span>
+                                <input type="checkbox" class="toggle" checked>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;input type="text" class="input" placeholder="..."&gt;
+&lt;input type="checkbox" class="toggle"&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lists -->
+            <section id="lists" class="doc-section">
+                <h2 class="doc-section-title">Lists</h2>
+                <p class="doc-section-desc">The primary way to group content and actions on mobile.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area full">
+                        <div class="list" style="border: none; border-radius: 0;">
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="list-item-title">General</div>
+                                </div>
+                                <div style="color: var(--color-text-tertiary);">›</div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Privacy</div>
+                                </div>
+                                <div style="color: var(--color-text-tertiary);">›</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;div class="list"&gt;
+  &lt;div class="list-item"&gt;...&lt;/div&gt;
+  &lt;div class="list-item"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards -->
+            <section id="cards" class="doc-section">
+                <h2 class="doc-section-title">Cards</h2>
+                <p class="doc-section-desc">Containers for content and actions.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div class="card" style="width: 100%; max-width: 320px;">
+                            <div class="card-image"></div>
+                            <h3 class="card-title">Card Title</h3>
+                            <p class="card-text">This is a standard card component used for displaying content groups.
+                            </p>
+                            <button class="btn btn-secondary">Action</button>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;div class="card"&gt;
+  &lt;div class="card-image"&gt;&lt;/div&gt;
+  &lt;h3 class="card-title"&gt;Title&lt;/h3&gt;
+  &lt;p class="card-text"&gt;Content...&lt;/p&gt;
+  &lt;button class="btn"&gt;Action&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Carousel -->
+            <section id="carousel" class="doc-section">
+                <h2 class="doc-section-title">Carousel</h2>
+                <p class="doc-section-desc">Horizontally scrollable list of cards with snap points.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area full" style="overflow: hidden;">
+                        <div class="carousel-container">
+                            <button class="carousel-btn prev" onclick="scrollCarousel(-1)">‹</button>
+                            <button class="carousel-btn next" onclick="scrollCarousel(1)">›</button>
+
+                            <div class="carousel" id="demo-carousel">
+                                <div class="carousel-item">
+                                    <div class="card">
+                                        <div class="card-image" style="background: #ffcccc;"></div>
+                                        <h3 class="card-title">Card 1</h3>
+                                        <p class="card-text">Swipe to see more.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="card">
+                                        <div class="card-image" style="background: #ccffcc;"></div>
+                                        <h3 class="card-title">Card 2</h3>
+                                        <p class="card-text">Native scroll snapping.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="card">
+                                        <div class="card-image" style="background: #ccccff;"></div>
+                                        <h3 class="card-title">Card 3</h3>
+                                        <p class="card-text">Smooth and responsive.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="card">
+                                        <div class="card-image" style="background: #ffecb3;"></div>
+                                        <h3 class="card-title">Card 4</h3>
+                                        <p class="card-text">Infinite possibilities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;div class="carousel-container"&gt;
+  &lt;button class="carousel-btn prev" onclick="scroll(-1)"&gt;‹&lt;/button&gt;
+  &lt;div class="carousel"&gt;
+    &lt;div class="carousel-item"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="carousel-btn next" onclick="scroll(1)"&gt;›&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                function scrollCarousel(direction) {
+                    const container = document.getElementById('demo-carousel');
+                    const itemWidth = container.querySelector('.carousel-item').offsetWidth;
+                    const gap = 16; // var(--space-md)
+                    const scrollAmount = itemWidth + gap;
+
+                    container.scrollBy({
+                        left: direction * scrollAmount,
+                        behavior: 'smooth'
+                    });
+                }
+            </script>
+
+            <!-- Animations & Loading -->
+            <section id="animations" class="doc-section">
+                <h2 class="doc-section-title">Animations & Loading</h2>
+                <p class="doc-section-desc">Feedback for loading states and transitions.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div
+                            style="display: flex; gap: 40px; align-items: center; width: 100%; justify-content: center; flex-wrap: wrap;">
+
+                            <!-- Spinner -->
+                            <div class="spinner"></div>
+
+                            <!-- Text Skeleton -->
+                            <div style="width: 200px;">
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                            </div>
+
+                            <!-- Card Skeleton -->
+                            <div class="card-skeleton" style="width: 240px;">
+                                <div class="skeleton skeleton-rect"></div>
+                                <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                                <div class="skeleton skeleton-text"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;!-- Card Skeleton --&gt;
+&lt;div class="card-skeleton"&gt;
+  &lt;div class="skeleton skeleton-rect"&gt;&lt;/div&gt;
+  &lt;div class="skeleton skeleton-text"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="spinner"&gt;&lt;/div&gt;
+
+&lt;div class="skeleton skeleton-text"&gt;&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 16px;">List Entry Animation</h3>
+                <div class="preview-card">
+                    <div class="preview-area full">
+                        <div class="list list-animated" style="border: none; border-radius: 0;">
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Item 1</div>
+                                </div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Item 2</div>
+                                </div>
+                            </div>
+                            <div class="list-item">
+                                <div class="list-item-content">
+                                    <div class="list-item-title">Item 3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;div class="list list-animated"&gt;
+  &lt;div class="list-item"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <section id="navigation" class="doc-section">
+                <h2 class="doc-section-title">Navigation</h2>
+                <p class="doc-section-desc">Standard top navigation bar.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area full">
+                        <nav class="navbar" style="position: static;">
+                            <button class="btn btn-ghost btn-icon">←</button>
+                            <div class="navbar-title">Settings</div>
+                            <button class="btn btn-ghost btn-icon">Edit</button>
+                        </nav>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;nav class="navbar"&gt;
+  &lt;button class="btn btn-ghost btn-icon"&gt;←&lt;/button&gt;
+  &lt;div class="navbar-title"&gt;Title&lt;/div&gt;
+  &lt;button class="btn btn-ghost"&gt;Action&lt;/button&gt;
+&lt;/nav&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Card -->
+            <section id="profile" class="doc-section">
+                <h2 class="doc-section-title">Profile Card</h2>
+                <p class="doc-section-desc">A specialized card for displaying user identity.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div class="profile-card" style="width: 100%; max-width: 340px;">
+                            <div class="avatar">NS</div>
+                            <div class="profile-info">
+                                <div class="profile-name">Nick Sol</div>
+                                <div class="profile-handle">@nicksol.eth</div>
+                            </div>
+                            <button class="btn btn-secondary"
+                                style="width: auto; height: 36px; padding: 0 12px; font-size: 14px;">Follow</button>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;div class="profile-card"&gt;
+  &lt;div class="avatar"&gt;NS&lt;/div&gt;
+  &lt;div class="profile-info"&gt;
+    &lt;div class="profile-name"&gt;Name&lt;/div&gt;
+    &lt;div class="profile-handle"&gt;@handle&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="btn btn-secondary"&gt;Follow&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modals & Sheets -->
+            <section id="modals" class="doc-section">
+                <h2 class="doc-section-title">Modals & Sheets</h2>
+                <p class="doc-section-desc">Overlays for focused tasks. Our sheets float above the interface.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area"
+                        style="height: 600px; position: relative; overflow: hidden; background: #f0f0f2;">
+
+                        <!-- Mock App Content -->
+                        <div
+                            style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+                            <button class="btn" onclick="toggleSheet1()" style="width: auto;">Open Sheet</button>
+                            <button class="btn btn-secondary" onclick="toggleModal()" style="width: auto;">Open Center
+                                Modal</button>
+                        </div>
+
+                        <!-- Standard Modal -->
+                        <div id="demo-modal" class="modal-overlay" style="display: none;">
+                            <div class="modal">
+                                <h3 style="margin-top: 0;">Confirm Action</h3>
+                                <p style="color: var(--color-text-secondary); margin-bottom: 24px;">Are you sure you
+                                    want to proceed with this action? This cannot be undone.</p>
+                                <div style="display: flex; gap: 12px;">
+                                    <button class="btn btn-secondary" onclick="toggleModal()"
+                                        style="flex: 1;">Cancel</button>
+                                    <button class="btn" style="flex: 1; background: var(--color-danger);"
+                                        onclick="toggleModal()">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sheet 1 -->
+                        <div id="demo-sheet-1" class="sheet-overlay" style="position: absolute;">
+                            <div class="sheet">
+                                <div
+                                    style="width: 40px; height: 5px; background: var(--color-border); border-radius: 3px; margin: 0 auto 24px;">
+                                </div>
+                                <div style="text-align: center; margin-bottom: 24px;">
+                                    <h3>First Sheet</h3>
+                                    <p>This is the first layer.</p>
+                                </div>
+                                <button class="btn" onclick="toggleSheet2()">Open Second Sheet</button>
+                                <button class="btn btn-ghost" onclick="toggleSheet1()"
+                                    style="margin-top: 8px;">Close</button>
+                            </div>
+                        </div>
+
+                        <!-- Sheet 2 -->
+                        <div id="demo-sheet-2" class="sheet-overlay sheet-front" style="position: absolute;">
+                            <div class="sheet" style="height: 250px;">
+                                <div
+                                    style="width: 40px; height: 5px; background: var(--color-border); border-radius: 3px; margin: 0 auto 24px;">
+                                </div>
+                                <div style="text-align: center; margin-bottom: 24px;">
+                                    <h3>Second Sheet</h3>
+                                    <p>Notice how the first sheet scales back.</p>
+                                </div>
+                                <button class="btn btn-secondary" onclick="toggleSheet2()">Close Top Sheet</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;!-- Standard Modal --&gt;
+&lt;div class="modal-overlay"&gt;
+  &lt;div class="modal"&gt;
+    &lt;h3&gt;Title&lt;/h3&gt;
+    &lt;p&gt;Content...&lt;/p&gt;
+    &lt;div style="display: flex; gap: 12px;"&gt;
+      &lt;button class="btn btn-secondary"&gt;Cancel&lt;/button&gt;
+      &lt;button class="btn"&gt;Confirm&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feedback -->
+            <section id="feedback" class="doc-section">
+                <h2 class="doc-section-title">Feedback</h2>
+                <p class="doc-section-desc">Non-intrusive notifications.</p>
+
+                <div class="preview-card">
+                    <div class="preview-area">
+                        <div style="display: flex; gap: 16px;">
+                            <button class="btn btn-secondary" onclick="showToast('Action Successful')">Default
+                                Toast</button>
+                            <button class="btn btn-secondary"
+                                onclick="showToast('Saved Successfully', 'success')">Success Toast</button>
+                        </div>
+                    </div>
+                    <div class="code-area">
+                        <pre class="code-block">
+&lt;!-- Toast Container --&gt;
+&lt;div class="toast-container"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  showToast('Message', 'success');
+&lt;/script&gt;
+</pre>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        // Modal Logic
+        function toggleModal() {
+            const modal = document.getElementById('demo-modal');
+            if (modal.style.display === 'none') {
+                modal.style.display = 'flex';
+            } else {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Sheet Logic
+        function toggleSheet1() {
+            const s1 = document.getElementById('demo-sheet-1');
+            s1.classList.toggle('active');
+        }
+
+        function toggleSheet2() {
+            const s1 = document.getElementById('demo-sheet-1');
+            const s2 = document.getElementById('demo-sheet-2');
+
+            if (s2.classList.contains('active')) {
+                s2.classList.remove('active');
+                s1.classList.remove('sheet-back');
+            } else {
+                s2.classList.add('active');
+                s1.classList.add('sheet-back');
+            }
+        }
+
+        // Carousel Logic
+        function scrollCarousel(direction) {
+            const container = document.getElementById('demo-carousel');
+            const itemWidth = container.querySelector('.carousel-item').offsetWidth;
+            const gap = 16;
+            const scrollAmount = itemWidth + gap;
+
+            container.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+
+        // Toast Logic
+        function showToast(message, type = 'default') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+
+            container.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+</body>
+
+</html>

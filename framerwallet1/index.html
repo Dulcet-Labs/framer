@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Framer Wallet</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/wallet.css">
+
+    <!-- Base Account SDK -->
+    <script src="https://unpkg.com/@base-org/account/dist/base-account.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <!-- Anti-Flash Onboarding Check -->
+    <script>
+        const isOnboarded = localStorage.getItem('isOnboarded');
+        const isExplicitLogout = localStorage.getItem('isExplicitLogout');
+
+        if (!isOnboarded) {
+            document.documentElement.classList.add('show-onboarding');
+        } else if (isExplicitLogout === 'true') {
+            document.documentElement.classList.add('show-welcome-back');
+        }
+    </script>
+    <style>
+        html.show-onboarding #onboarding,
+        html.show-welcome-back #onboarding {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            display: flex !important;
+        }
+
+        /* Handle Welcome Back State via CSS to prevent flash */
+        html.show-welcome-back #step-1 {
+            display: none !important;
+        }
+
+        html.show-welcome-back #step-welcome-back {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <style>
+        /* ... (Existing Styles) ... */
+
+        /* Profile Squircle Button */
+        .btn-profile {
+            width: 48px;
+            /* Increased size */
+            height: 48px;
+            border-radius: 16px;
+            /* Slightly larger radius */
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn-profile:active {
+            transform: scale(0.95);
+        }
+
+        /* Onboarding Modal */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-background);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .onboarding-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .onboarding-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            display: none;
+            /* Hidden by default */
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .onboarding-card.active {
+            display: flex;
+        }
+
+        .onboarding-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #eee, #ddd);
+            border-radius: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .onboarding-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .onboarding-text {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+            margin-bottom: 40px;
+            max-width: 280px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-border);
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: var(--color-text-primary);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Taller Sheet */
+        .sheet {
+            height: 85vh;
+        }
+    </style>
+
+    <!-- Pull to Refresh Spinner -->
+    <div id="ptr-spinner"
+        style="position: fixed; top: -50px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; height: 50px; z-index: 5; transition: top 0.2s;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <nav class="navbar"
+        style="background: transparent; border: none; padding: 0 24px; height: 64px; justify-content: space-between;">
+
+        <!-- Left: Profile Squircle (Triggers Onboarding/Connect) -->
+        <div style="position: relative;">
+            <button id="btn-profile" class="btn-profile" onclick="openOnboarding()">
+                <i data-lucide="user" width="20" height="20"></i>
+            </button>
+
+            <!-- Avatar (Hidden until connected, replaces btn-profile) -->
+            <div id="user-avatar" class="avatar-squircle hidden"
+                style="background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); width: 48px; height: 48px; border-radius: 16px !important;">
+                0x...</div>
+        </div>
+
+        <!-- Right: Scan & Settings -->
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-ghost btn-icon" onclick="openScan()"
+                style="width: 40px; height: 40px; color: var(--color-text-primary);">
+                <i data-lucide="scan-line" width="20" height="20"></i>
+            </button>
+            <a href="settings.html" class="btn btn-ghost btn-icon"
+                style="width: 40px; height: 40px; color: var(--color-text-primary); display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="settings-2" width="20" height="20"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Onboarding Overlay -->
+    <div id="onboarding" class="onboarding-overlay">
+        <!-- ... (Onboarding content remains same, just skipping in replacement if possible, but I need to match context) ... -->
+        <!-- Actually, I can't skip content easily with replace_file_content if I touch the nav which is above it. 
+             I'll just target the Nav and Grid separately to be safe and efficient. -->
+    </div>
+
+    <!-- I will split this into two tool calls or just target the Nav first. 
+         Let's target the Nav first. -->
+
+    <!-- Onboarding Overlay -->
+    <div id="onboarding" class="onboarding-overlay">
+
+        <!-- Step 1 -->
+        <div class="onboarding-card active" id="step-1">
+            <div class="onboarding-image">👋</div>
+            <h2 class="onboarding-title">Welcome to Framer</h2>
+            <p class="onboarding-text">The simplest way to manage your assets on Base.</p>
+            <div class="dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="btn" onclick="nextStep(2)">Next</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="onboarding-card" id="step-2">
+            <div class="onboarding-image">🛡️</div>
+            <h2 class="onboarding-title">Secure & Safe</h2>
+            <p class="onboarding-text">Powered by Smart Wallets. No seed phrases to lose.</p>
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+            <button class="btn" onclick="nextStep(3)">Next</button>
+        </div>
+        <!-- Welcome Back Card -->
+        <div class="onboarding-card" id="step-welcome-back">
+            <div class="onboarding-image">
+                <i data-lucide="wallet" width="64" height="64" style="color: var(--color-text-primary);"></i>
+            </div>
+            <h2 class="onboarding-title">Welcome Back</h2>
+            <p class="onboarding-text">Sign in to access your wallet</p>
+
+            <button class="btn" onclick="loginFromWelcome()">
+                Log In
+            </button>
+        </div>
+        <!-- Step 3 -->
+        <div class="onboarding-card" id="step-3">
+            <div class="onboarding-image">🚀</div>
+            <h2 class="onboarding-title">Ready to Go</h2>
+            <p class="onboarding-text">Create your wallet in seconds using your Passkey.</p>
+            <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot active"></div>
+            </div>
+            <button class="btn" onclick="finishOnboarding()">Get Started</button>
+        </div>
+
+    </div>
+
+    <main style="padding: 0 20px;">
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-label">Total Balance</div>
+            <div class="balance-amount">...</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-grid">
+            <div class="action-btn" onclick="openReceiveSheet()">
+                <div class="action-icon">
+                    <i data-lucide="arrow-down" width="18" height="18"></i>
+                </div>
+                <div class="action-label">Receive</div>
+            </div>
+            <div class="action-btn" onclick="openSendSheet()">
+                <div class="action-icon">
+                    <i data-lucide="send" width="18" height="18"></i>
+                </div>
+                <div class="action-label">Send</div>
+            </div>
+            <div class="action-btn" onclick="alert('Pay feature coming soon!')">
+                <div class="action-icon">
+                    <i data-lucide="credit-card" width="18" height="18"></i>
+                </div>
+                <div class="action-label">Pay</div>
+            </div>
+        </div>
+
+        <!-- Assets List -->
+        <div class="section-header">
+            <div class="section-title">Assets</div>
+        </div>
+
+        <div class="list list-animated" id="asset-list">
+            <!-- Assets will be injected here via JS -->
+            <div style="padding: 20px; text-align: center; color: var(--color-text-secondary); font-size: 14px;">
+                Connect wallet to view assets
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i data-lucide="home" width="24" height="24"></i>
+        </a>
+        <a href="#" class="nav-item">
+            <i data-lucide="pie-chart" width="24" height="24"></i>
+        </a>
+        <a href="#" class="nav-item">
+            <i data-lucide="arrow-left-right" width="24" height="24"></i>
+        </a>
+        <a href="#" class="nav-item">
+            <i data-lucide="clock" width="24" height="24"></i>
+        </a>
+    </nav>
+
+    <!-- Send Sheet -->
+    <div id="sheet-send" class="sheet-overlay">
+        <div class="sheet">
+            <div
+                style="width: 40px; height: 5px; background: var(--color-border); border-radius: 3px; margin: 0 auto 24px;">
+            </div>
+            <h3 style="text-align: center; margin-bottom: 24px;">Send Asset</h3>
+
+            <div class="input-group" style="margin-bottom: 16px;">
+                <input type="text" class="input" placeholder="Address or ENS">
+            </div>
+
+            <div class="input-group" style="margin-bottom: 24px;">
+                <input type="number" class="input" placeholder="Amount">
+            </div>
+
+            <button class="btn" onclick="closeSheets()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Receive Sheet -->
+    <div id="sheet-receive" class="sheet-overlay">
+        <div class="sheet" style="display: flex; flex-direction: column;">
+            <div
+                style="width: 40px; height: 5px; background: var(--color-border); border-radius: 3px; margin: 0 auto 24px; flex-shrink: 0;">
+            </div>
+            <h3 style="text-align: center; margin-bottom: 8px; flex-shrink: 0;">Receive</h3>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 0px; flex-shrink: 0;">Scan
+                to send to this address</p>
+
+            <!-- Centered QR Code Area -->
+            <div
+                style="flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; min-height: 0;">
+                <div id="receive-qr"
+                    style="width: 260px; height: 260px; background: #fff; border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 24px rgba(0,0,0,0.05);">
+                </div>
+            </div>
+
+            <!-- Address Display & Copy -->
+            <div class="input-group" onclick="copyAddress()"
+                style="margin-bottom: 16px; display: flex; align-items: center; justify-content: center; background: var(--color-surface); padding: 16px; border-radius: 16px; border: 1px solid var(--color-border); cursor: pointer; transition: background 0.2s; flex-shrink: 0;">
+                <!-- Hidden full address for copying -->
+                <input type="hidden" id="receive-address-full">
+
+                <!-- Truncated Display -->
+                <div id="receive-address-display"
+                    style="font-family: monospace; font-size: 18px; text-align: center; color: var(--color-text-primary); font-weight: 600;">
+                    Loading...
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="closeSheets()" style="flex-shrink: 0;">Close</button>
+        </div>
+    </div>
+
+    <!-- Scan Sheet -->
+    <div id="sheet-scan" class="sheet-overlay">
+        <div class="sheet">
+            <div
+                style="width: 40px; height: 5px; background: var(--color-border); border-radius: 3px; margin: 0 auto 24px;">
+            </div>
+            <h3 style="text-align: center; margin-bottom: 24px;">Scan QR Code</h3>
+
+            <!-- QR Reader Container -->
+            <div id="qr-reader"
+                style="width: 100%; border-radius: 24px; margin-bottom: 24px; overflow: hidden; background: #000;">
+            </div>
+
+            <button class="btn" onclick="closeSheets()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Wallet Logic -->
+    <script src="js/wallet.js"></script>
+
+</body>
+
+</html>

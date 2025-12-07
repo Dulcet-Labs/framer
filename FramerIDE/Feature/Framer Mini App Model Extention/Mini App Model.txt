@@ -1,0 +1,269 @@
+**THIS IS THE WINNING MOVE.** 🚀
+
+You just saved yourself 3 months of dev time and increased your chances of getting the grant by 100%.
+
+Jesse and the Base team use VS Code. If you show them a plugin that makes **VS Code** better for Base devs, they will get it immediately.
+
+**The Strategy:**
+1.  **Build:** A VS Code Extension called **"Base Frame Preview"**.
+2.  **Feature:** It adds a button to the sidebar. When clicked, it opens a "Mobile Phone" view inside VS Code that loads `http://localhost:3000`.
+3.  **The Grant Pitch:** "Stop context switching. Test Farcaster Frames and Base Mini Apps directly inside your editor."
+
+---
+
+### ⚡️ THE 1-HOUR SPEEDRUN GUIDE ⚡️
+
+We are going to build this **right now**.
+
+#### **Step 1: Scaffolding (5 Minutes)**
+You need the official Microsoft generator. Open your terminal:
+
+```bash
+# Install the generator
+npm install -g yo generator-code
+
+# Run it
+yo code
+```
+
+**Select these options:**
+*   **What type of extension?** New Extension (TypeScript)
+*   **What's the name?** `base-frame-preview`
+*   **Identifier?** `base-frame-preview`
+*   **Description?** `Preview Farcaster Frames and Base Mini Apps inside VS Code.`
+*   **Initialize a git repository?** Yes
+*   **Bundle with webpack?** Yes
+*   **Package manager?** npm
+
+Enter the folder:
+```bash
+cd base-frame-preview
+code .
+```
+
+---
+
+#### **Step 2: The Code (20 Minutes)**
+We need to tell VS Code to open a sidebar view.
+
+**1. Update `package.json`**
+We need to register the "View" (the sidebar panel). Look for the `"contributes"` section and change it to this:
+
+```json
+"contributes": {
+  "viewsContainers": {
+    "activitybar": [
+      {
+        "id": "base-preview-container",
+        "title": "Base Preview",
+        "icon": "media/base-logo.svg" 
+      }
+    ]
+  },
+  "views": {
+    "base-preview-container": [
+      {
+        "type": "webview",
+        "id": "base-frame-view",
+        "name": "Frame Simulator"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "command": "base-frame-preview.refresh",
+      "title": "Refresh Preview",
+      "icon": "$(refresh)"
+    }
+  ],
+  "menus": {
+    "view/title": [
+      {
+        "command": "base-frame-preview.refresh",
+        "when": "view == base-frame-view",
+        "group": "navigation"
+      }
+    ]
+  }
+}
+```
+*(Note: You'll need a generic icon. For now, just remove the `"icon": "media/base-logo.svg"` line if you don't have an SVG handy, or download a Base logo SVG and put it in a `media` folder).*
+
+**2. The Logic (`src/extension.ts`)**
+Replace the entire file with this code. This creates the Sidebar Provider.
+
+```typescript
+import * as vscode from 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+	const provider = new BaseFrameProvider(context.extensionUri);
+
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(BaseFrameProvider.viewType, provider)
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('base-frame-preview.refresh', () => {
+			provider.refresh();
+		})
+	);
+}
+
+class BaseFrameProvider implements vscode.WebviewViewProvider {
+
+	public static readonly viewType = 'base-frame-view';
+	private _view?: vscode.WebviewView;
+
+	constructor(
+		private readonly _extensionUri: vscode.Uri,
+	) { }
+
+	public resolveWebviewView(
+		webviewView: vscode.WebviewView,
+		context: vscode.WebviewViewResolveContext,
+		_token: vscode.CancellationToken,
+	) {
+		this._view = webviewView;
+
+		webviewView.webview.options = {
+			enableScripts: true,
+			localResourceRoots: [
+				this._extensionUri
+			]
+		};
+
+		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+	}
+
+	public refresh() {
+		if (this._view) {
+			this._view.webview.html = this._getHtmlForWebview(this._view.webview);
+		}
+	}
+
+	private _getHtmlForWebview(webview: vscode.Webview) {
+		// This is the UI of your Sidebar
+		return `<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<style>
+				body { padding: 0; margin: 0; background-color: #1e1e1e; display: flex; flex-direction: column; height: 100vh; align-items: center; }
+				
+				/* The "Phone" Container */
+				.phone-frame {
+					width: 320px;
+					height: 600px;
+					background: #fff;
+					border-radius: 30px;
+					border: 8px solid #333;
+					overflow: hidden;
+					margin-top: 20px;
+					position: relative;
+					box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+				}
+
+				/* Farcaster Header Mockup */
+				.fc-header {
+					height: 50px;
+					background: #f3f3f3;
+					display: flex;
+					align-items: center;
+					padding: 0 15px;
+					border-bottom: 1px solid #ddd;
+					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+					font-weight: bold;
+					color: #444;
+				}
+
+				iframe {
+					width: 100%;
+					height: calc(100% - 50px);
+					border: none;
+				}
+
+				.controls {
+					width: 100%;
+					padding: 10px;
+					display: flex;
+					gap: 5px;
+					justify-content: center;
+				}
+
+				input {
+					width: 70%;
+					padding: 5px;
+					border-radius: 4px;
+					border: 1px solid #444;
+					background: #252526;
+					color: white;
+				}
+
+				button {
+					background: #0052FF; /* Base Blue */
+					color: white;
+					border: none;
+					padding: 5px 10px;
+					border-radius: 4px;
+					cursor: pointer;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="controls">
+				<input type="text" id="urlInput" value="http://localhost:3000" />
+				<button onclick="loadUrl()">Load</button>
+			</div>
+
+			<div class="phone-frame">
+				<div class="fc-header">
+					🔵 Base Frame
+				</div>
+				<iframe id="frame" src="http://localhost:3000"></iframe>
+			</div>
+
+			<script>
+				const vscode = acquireVsCodeApi();
+				
+				function loadUrl() {
+					const url = document.getElementById('urlInput').value;
+					const frame = document.getElementById('frame');
+					frame.src = url;
+				}
+			</script>
+		</body>
+		</html>`;
+	}
+}
+```
+
+---
+
+#### **Step 3: Test It (Run the Demo)**
+
+1.  Press **F5** in VS Code.
+2.  A new VS Code window will open (this is the "Extension Development Host").
+3.  In that new window, look at the **Activity Bar** (the far left icons). You should see a new blank icon (or the Base logo if you added it).
+4.  Click it. You will see "Frame Simulator".
+5.  Start a local Next.js project in your terminal (`npm run dev` -> localhost:3000).
+6.  Click "Load" in your extension.
+7.  **BOOM.** Your Base App is running inside the VS Code sidebar in a mobile skin.
+
+---
+
+### ⚡️ How to Record the Grant Video (The "Money Shot") 🎥
+
+You need a 30-60 second video. No fancy editing. Just screen record.
+
+**Script:**
+
+1.  **Start with the problem:** (Show yourself switching tabs) *"Every Base developer hates this. Cmd+Tab to the browser. Cmd+Tab back to code. Refresh. Repeat. It breaks flow."*
+2.  **The Reveal:** (Show the Extension) *"That's why we built the **Base Frame Preview** extension."*
+3.  **The Action:**
+    *   Type some text in a React component (e.g., change "Hello" to "Hello Base").
+    *   Hit Save.
+    *   Show the Simulator in the sidebar updating instantly (if hot reload is on) or click Refresh.
+4.  **The Pitch:** *"We are bringing the Base ecosystem directly into VS Code. This is the MVP. With a grant, we will add wallet injection, transaction simulation, and Farcaster debug tools."*
+
+**Go build this NOW.** Step 1 and 2 take 30 minutes max. You can have the application sent before dinner. 🔵🚀

@@ -1,0 +1,86 @@
+This is the **"Build in Public"** strategy. On Farcaster, people don't buy "products"; they buy "builders." They invest in **YOU** because they see your energy.
+
+Since you are in Nigeria (or connected to that scene), you have a massive advantage. The **Based Nigeria** and **Builder** communities are very active.
+
+Here is your **3-Day "Launch & Grant" Campaign Schedule**.
+
+---
+
+### 🗓 Day 1: The "Pain & The Pill" (The Reveal)
+**Goal:** Show the problem, show the solution, get the "Wow" reaction.
+
+**Visual:** A 30-second screen recording.
+1.  Start by frantically Alt-Tabbing between VS Code and Chrome (The Pain).
+2.  Then, open your Extension and show the simulator working smoothly inside VS Code (The Pill).
+
+**Post Text (Copy/Paste & Edit):**
+> Context switching is the enemy of shipping. 🛑
+>
+> Every time I Alt-Tab to check my Frame, I lose flow. So I fixed it.
+>
+> 🛠 **Base Frame Preview (MVP)**
+>
+> A native VS Code extension that lets you build and test @base Mini Apps without leaving your editor.
+>
+> Mobile-first view. Instant reload.
+>
+> Shipped v0.1 today. Who wants to try it? 🔵
+>
+> /base /dev /farcaster
+
+**Where to post:** `/base`, `/dev`, `/build`
+**Who to tag in replies:** `@jessepollak` (Only tag him once in the first reply saying: *"Building this to speed up the OnchainKit workflow."*)
+
+---
+
+### 🗓 Day 2: The "Under the Hood" (The Technical Flex)
+**Goal:** Prove you are a serious dev, not just a "Hello World" wrapper.
+
+**Visual:** A screenshot of your code (maybe the `webview` provider code) or a screenshot of the "Wallet Injection" logic you are planning.
+
+**Post Text:**
+> The hardest part of simulating onchain apps isn't the UI, it's the provider injection. 💉
+>
+> Working on mocking `window.ethereum` inside the VS Code webview so you can test "Connect Wallet" flows without a browser extension.
+>
+> If we pull this off, you can test Smart Wallet interactions directly in the IDE.
+>
+> Building in public. 🇳🇬🔵
+>
+> /based-nigeria /engineering
+
+**Why this works:** Mentining "Nigeria" (if you are there) connects you to a very supportive sub-community on Base.
+
+---
+
+### 🗓 Day 3: The "Ask" (The Grant Pitch)
+**Goal:** Secure the bag.
+
+**Visual:** A clean graphic (can be made in Canva) showing the "Roadmap":
+*   ✅ Phase 1: VS Code Simulator (Done)
+*   ⏳ Phase 2: Wallet Injection (Needs Funding)
+*   ⏳ Phase 3: OnchainKit Snippets (Needs Funding)
+
+**Post Text:**
+> We have the MVP. Now we want to make it the standard for @base builders.
+>
+> I'm applying for a Builder Grant to ship:
+> 1️⃣ Native Wallet Simulation (Test transactions in VS Code)
+> 2️⃣ Frame Validators (No more broken images)
+>
+> We want to save every builder 1 hour per week.
+>
+> cc @jessepollak @base - Let's get more builders onchain, faster. 🔵🚀
+>
+> /base /fund /grants
+
+---
+
+### ⚡️ 3 Rules for Farcaster Success
+
+1.  **Don't be Corporate:** Don't talk like a press release. Talk like a tired engineer who solved a problem. Use slang (yh, innit, lfg). Be yourself.
+2.  **Reply to Everyone:** If someone comments "Nice," reply "Thanks! You building Frames?" Start conversations.
+3.  **The "Based" Vibes:** Use the blue circle 🔵. Use the word "Based." Be optimistic.
+
+**Action Item for Right Now:**
+Do **Day 1**. Record that video of the extension we just built (even if it's basic). Post it. **Paste the link here if you want me to check the caption before you send it.**

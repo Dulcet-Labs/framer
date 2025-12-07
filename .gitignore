@@ -1,0 +1,30 @@
+# System Files
+.DS_Store
+Thumbs.db
+*.swp
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Node
+node_modules/
+dist/
+out/
+build/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# VS Code Extension
+.vscode-test/
+*.vsix
