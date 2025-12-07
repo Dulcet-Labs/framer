@@ -1,0 +1,706 @@
+/* Default Webpage Styling & Light/Dark Mode */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Light Mode Variables (Default) */
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --primary-color: #007aff;
+    --secondary-color: #f2f2f7;
+    --border-color: #e5e5ea;
+    --font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Dark Mode Variables */
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --primary-color: #0a84ff;
+        --secondary-color: #1c1c1e;
+        --border-color: #38383a;
+    }
+}
+
+/* Manual Dark Mode Override */
+[data-theme="dark"] {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --primary-color: #0a84ff;
+    --secondary-color: #1c1c1e;
+    --border-color: #38383a;
+}
+
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --primary-color: #007aff;
+    --secondary-color: #f2f2f7;
+    --border-color: #e5e5ea;
+}
+
+/* Reset & Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 0;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    background: var(--border-color);
+    transform: scale(1.05);
+}
+
+/* Mini App Modal */
+.mini-app-modal {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 424px;
+    height: 695px;
+    background-color: var(--bg-color);
+    border-radius: 24px 24px 0 0;
+    /* Only top rounded */
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: height 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+/* Modal Body & Iframe */
+.modal-body {
+    flex: 1;
+    width: 100%;
+    height: calc(100% - 48px);
+    /* Subtract header height */
+    background: var(--bg-color);
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Thin scrollbar for Chrome, Safari and Opera */
+.modal-body::-webkit-scrollbar,
+#app-frame::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track,
+#app-frame::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+#app-frame::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+/* Thin scrollbar for IE, Edge and Firefox */
+.modal-body,
+#app-frame {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+#app-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    position: relative;
+    z-index: 2;
+    /* Sit above empty state when visible */
+}
+
+#app-frame.hidden {
+    display: none;
+}
+
+/* Empty State Styles */
+.empty-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    z-index: 1;
+}
+
+.empty-state-logo {
+    width: 64px;
+    height: 64px;
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+/* Loading State Styles */
+.loading-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    z-index: 3;
+    /* Above everything */
+}
+
+.loading-state.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--secondary-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments based on provided CSS */
+@media (max-width: 480px) {
+    .mini-app-modal {
+        width: 100vw;
+        height: 100vh;
+        right: 0;
+        border-radius: 0;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.app-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.app-icon-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+.modal-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    /* For absolute positioning of input */
+}
+
+/* URL Input Styles */
+.url-input-container {
+    position: absolute;
+    right: 100px;
+    /* Position to the left of controls */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 180px;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.url-input-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(10px, -50%);
+}
+
+.url-input {
+    width: 100%;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.url-input:focus {
+    border-color: var(--primary-color);
+}
+
+.url-input:focus::placeholder {
+    color: transparent;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Specific override for URL toggle button if requested to have no hover */
+#toggle-url-btn:hover {
+    background-color: transparent;
+}
+
+.modal-content {
+    flex: 1;
+    background-color: var(--secondary-color);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Collapsed state for modal */
+.mini-app-modal.collapsed {
+    height: 48px !important;
+    /* Approximate header height */
+    border-radius: 16px 16px 0 0;
+}
+
+/* Ensure header stays visible and aligned */
+.mini-app-modal.collapsed .modal-header {
+    border-bottom: none;
+    /* Optional: remove border when collapsed */
+}
+
+/* Welcome Page Styles */
+.welcome-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Background handled by grid and orbs now */
+    background-color: var(--bg-color);
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+    animation: fadeIn 0.8s ease-out;
+    position: relative;
+    /* Ensure it stays above background orbs */
+    z-index: 1;
+}
+
+.welcome-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text-color) 0%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.brand-highlight {
+    color: var(--primary-color);
+    -webkit-text-fill-color: var(--primary-color);
+}
+
+.welcome-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.cta-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 16px;
+    /* Squircle feel */
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-color);
+    padding: 12px 32px;
+    border-radius: 16px;
+    /* Squircle feel */
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-color);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Build on Base Section */
+.build-on-base {
+    position: fixed;
+    /* Changed from absolute to fixed */
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* Increased gap slightly */
+    opacity: 1;
+    /* Full visibility */
+    transition: opacity 0.2s ease;
+}
+
+.build-on-base:hover {
+    opacity: 0.8;
+    /* Slight fade on hover instead */
+}
+
+.base-text {
+    font-size: 1.1rem;
+    /* Increased size */
+    font-weight: 700;
+    /* Increased weight */
+    color: var(--text-color);
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.base-logo {
+    height: 24px;
+    width: auto;
+    /* Removed border-radius as it's likely a full lockup now */
+}
+
+/* Waitlist Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.waitlist-content {
+    background: var(--bg-color);
+    padding: 2.5rem;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-overlay.active .waitlist-content {
+    transform: scale(1);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.close-modal-btn:hover {
+    opacity: 1;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-input:focus {
+    border-color: var(--primary-color);
+}
+
+.w-full {
+    width: 100%;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 12px 24px;
+    border-radius: 9999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+}
+
+.toast.error {
+    border-color: #ff3b30;
+    color: #ff3b30;
+}
+
+.toast.error .toast-icon {
+    content: '⚠️';
+}
+
+/* Ambient Background Animation */
+.welcome-container {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-color);
+}
+
+.ambient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 0;
+    animation: float 20s infinite ease-in-out;
+    pointer-events: none;
+}
+
+.orb-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(0, 122, 255, 0.2);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: rgba(140, 0, 255, 0.15);
+    /* Adding a touch of purple for depth */
+    bottom: -150px;
+    left: -150px;
+    animation-delay: -10s;
+}
+
+/* Floating Animation */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(50px, 50px) scale(1.1);
+    }
+
+    50% {
+        transform: translate(0, 100px) scale(1);
+    }
+
+    75% {
+        transform: translate(-50px, 50px) scale(0.9);
+    }
+}
+
+.toast-message {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
