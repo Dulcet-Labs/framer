@@ -20,7 +20,7 @@ export function WaitlistModal({ isOpen, onClose, onSuccess, onError }: WaitlistM
             // See setup instructions in: /scripts/google-sheets-setup.md
             const GOOGLE_SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyl58egsnsZ6VKtdN7YUO1F45AgZ2Gq4GdpNYjPHtiyhjZcZgXbojiXHOgQBuHZNJVr-A/exec';
 
-            const response = await fetch(GOOGLE_SHEETS_ENDPOINT, {
+            await fetch(GOOGLE_SHEETS_ENDPOINT, {
                 method: 'POST',
                 mode: 'no-cors', // Required for Google Apps Script
                 headers: {
