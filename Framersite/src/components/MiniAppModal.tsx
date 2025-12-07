@@ -1,4 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useAccount, useConfig } from 'wagmi';
+import { getWalletClient } from '@wagmi/core';
 
 export interface MiniAppConfig {
     name: string;
@@ -18,6 +20,83 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
     const [urlInputValue, setUrlInputValue] = useState('');
     const [isAppLoading, setIsAppLoading] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement>(null);
+
+    // Wallet Bridge
+    const config = useConfig();
+    const { address, isConnected } = useAccount();
+
+    useEffect(() => {
+        const handleMessage = async (event: MessageEvent) => {
+            // Verify message comes from the iframe
+            if (!iframeRef.current || event.source !== iframeRef.current.contentWindow) return;
+
+            const { data } = event;
+
+            // Basic JSON-RPC message structure check
+            if (data && typeof data === 'object' && data.method) {
+                console.log('[Parent] Received request from iframe:', data.method, data.params);
+
+                try {
+                    let result;
+
+                    // Handle specific methods or forward to walletClient
+                    if (data.method === 'eth_requestAccounts' || data.method === 'eth_accounts') {
+                        if (isConnected && address) {
+                            result = [address];
+                        } else {
+                            // Can't automatically connect from iframe trigger without user interaction in parent usually.
+                            // Return empty array to indicate no accounts, or error.
+                            // Some dapps prefer empty array for eth_accounts.
+                            result = [];
+                        }
+                    } else {
+                        // For transaction/signing requests, we need the wallet client.
+                        // Fetching fresh client ensures we don't use a stale one.
+                        // We must specify the account to ensure we get the client for the connected user.
+                        const client = await getWalletClient(config, { account: address });
+
+                        if (client) {
+                            result = await client.request({
+                                method: data.method,
+                                params: data.params,
+                            });
+                        } else {
+                            throw new Error('Connector not connected');
+                        }
+                    }
+
+                    // Send success response
+                    if (iframeRef.current && iframeRef.current.contentWindow) {
+                        const response = {
+                            jsonrpc: '2.0',
+                            id: data.id,
+                            result: result
+                        };
+                        iframeRef.current.contentWindow.postMessage(response, event.origin);
+                    }
+
+                } catch (error: any) {
+                    console.error('[Parent] Error handling iframe request:', error);
+                    // Send error response
+                    if (iframeRef.current && iframeRef.current.contentWindow) {
+                        const response = {
+                            jsonrpc: '2.0',
+                            id: data.id,
+                            error: {
+                                code: error.code || -32603,
+                                message: error.message || 'Internal Error',
+                                data: error.data
+                            }
+                        };
+                        iframeRef.current.contentWindow.postMessage(response, event.origin);
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, [config, address, isConnected]);
 
     const handleUrlSubmit = () => {
         let url = urlInputValue.trim();
@@ -66,6 +145,140 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
 
     const handleIframeLoad = () => {
         setIsAppLoading(false);
+
+        // Inject wallet provider into iframe
+        if (iframeRef.current && miniApp.url) {
+            try {
+                injectWalletProvider();
+            } catch (error) {
+                console.warn('[Parent] Could not inject wallet provider (likely cross-origin):', error);
+            }
+        }
+    };
+
+    const injectWalletProvider = () => {
+        if (!iframeRef.current?.contentWindow) return;
+
+        const iframeWindow = iframeRef.current.contentWindow;
+
+        // Check if same-origin (we can only inject into same-origin iframes directly)
+        try {
+            const isSameOrigin = iframeWindow.location.origin === window.location.origin;
+
+            if (isSameOrigin) {
+                // For same-origin, we can directly inject
+                const script = iframeWindow.document.createElement('script');
+                script.textContent = getProviderScript();
+                iframeWindow.document.head.appendChild(script);
+                console.log('[Parent] ✅ Injected wallet provider (same-origin)');
+            } else {
+                // For cross-origin, we need to send the script via postMessage
+                // and have the iframe execute it (requires iframe cooperation)
+                iframeWindow.postMessage({
+                    type: 'INJECT_PROVIDER',
+                    script: getProviderScript()
+                }, '*');
+                console.log('[Parent] 📤 Sent provider injection request (cross-origin)');
+            }
+        } catch (e) {
+            console.warn('[Parent] Cross-origin iframe detected, attempting postMessage injection');
+            iframeWindow.postMessage({
+                type: 'INJECT_PROVIDER',
+                script: getProviderScript()
+            }, '*');
+        }
+    };
+
+    const getProviderScript = () => {
+        return `
+(function() {
+    if (window.ethereum) {
+        console.log('[Iframe] Wallet provider already exists, skipping injection');
+        return;
+    }
+
+    console.log('[Iframe] 🔌 Injecting proxy wallet provider...');
+
+    let requestId = 0;
+    const pendingRequests = new Map();
+
+    // Listen for responses from parent
+    window.addEventListener('message', (event) => {
+        const { data } = event;
+        if (data && data.jsonrpc === '2.0' && data.id !== undefined) {
+            const pending = pendingRequests.get(data.id);
+            if (pending) {
+                pendingRequests.delete(data.id);
+                if (data.error) {
+                    pending.reject(new Error(data.error.message || 'Request failed'));
+                } else {
+                    pending.resolve(data.result);
+                }
+            }
+        }
+    });
+
+    // Create EIP-1193 compatible provider
+    window.ethereum = {
+        isMetaMask: false,
+        isCoinbaseWallet: true,
+        isFramerIDE: true,
+        
+        request: async ({ method, params }) => {
+            const id = ++requestId;
+            
+            return new Promise((resolve, reject) => {
+                pendingRequests.set(id, { resolve, reject });
+                
+                // Send request to parent
+                window.parent.postMessage({
+                    jsonrpc: '2.0',
+                    id,
+                    method,
+                    params: params || []
+                }, '*');
+
+                // Timeout after 60 seconds
+                setTimeout(() => {
+                    if (pendingRequests.has(id)) {
+                        pendingRequests.delete(id);
+                        reject(new Error('Request timeout'));
+                    }
+                }, 60000);
+            });
+        },
+
+        // Legacy methods for older dapps
+        enable: async () => {
+            return window.ethereum.request({ method: 'eth_requestAccounts' });
+        },
+
+        send: (methodOrPayload, paramsOrCallback) => {
+            if (typeof methodOrPayload === 'string') {
+                return window.ethereum.request({ 
+                    method: methodOrPayload, 
+                    params: paramsOrCallback 
+                });
+            }
+            // Legacy send with callback
+            return window.ethereum.request(methodOrPayload)
+                .then(result => paramsOrCallback(null, { result }))
+                .catch(error => paramsOrCallback(error));
+        },
+
+        sendAsync: (payload, callback) => {
+            window.ethereum.request(payload)
+                .then(result => callback(null, { result }))
+                .catch(error => callback(error));
+        }
+    };
+
+    // Dispatch event to notify dapps
+    window.dispatchEvent(new Event('ethereum#initialized'));
+    
+    console.log('[Iframe] ✅ Proxy wallet provider injected successfully');
+})();
+        `;
     };
 
     return (

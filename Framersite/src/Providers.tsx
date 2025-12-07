@@ -13,6 +13,7 @@ const wagmiConfig = createConfig({
     connectors: [
         coinbaseWallet({
             appName: 'FramerIDE',
+            appLogoUrl: '/mini-app-model/myApp.svg',
             preference: 'all',
             version: '4',
         }),

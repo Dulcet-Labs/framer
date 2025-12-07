@@ -25,7 +25,7 @@ function App() {
   const [miniApp, setMiniApp] = useState<MiniAppConfig>({
     name: 'MyApp',
     icon: '/mini-app-model/myApp.svg',
-    url: '/mini-app-model/demo-app.html',
+    url: '',
   });
 
   // Waitlist Logic
