@@ -56,7 +56,6 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
 }
 
 body {
@@ -360,6 +359,42 @@ select {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+/* ----------------------------------
+   CUSTOM WALLET STYLES
+   ---------------------------------- */
+.dev-account-connect {
+  position: relative;
+}
+
+.wallet-conn-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.wallet-conn-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+
+/* Reduce internal padding to minimize gap */
+div[data-testid="ockWalletDropdown"]>div:first-child {
+  padding-top: 8px !important;
+}
+
 /* Specific override for URL toggle button if requested to have no hover */
 #toggle-url-btn:hover {
   background-color: transparent;
@@ -368,7 +403,7 @@ select {
 .modal-content {
   flex: 1;
   background-color: var(--secondary-color);
-  padding: 20px;
+
   overflow-y: auto;
 }
 
@@ -708,84 +743,4 @@ select {
 .toast-message {
   font-weight: 500;
   font-size: 0.95rem;
-}
-
-/* ----------------------------------
-   CUSTOM WALLET STYLES (Vanilla CSS)
-   ---------------------------------- */
-.dev-account-connect {
-  /* Ensure dropup works */
-  display: flex;
-  flex-direction: column-reverse;
-  /* Just a trick, but usually absolute positioning is better */
-  position: relative;
-}
-
-/* The button container from OnchainKit usually has a specific class or we style the wrapper */
-.wallet-conn-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-color);
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.wallet-conn-btn:hover {
-  background: var(--secondary-color);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-/* Force dropdown to open upwards (Dropup) with Auto Height */
-div[data-testid="ockWalletDropdown"] {
-  position: absolute;
-  bottom: 100% !important;
-  top: auto !important;
-  margin-bottom: 12px;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  border-radius: 16px;
-  overflow: visible !important;
-  height: auto !important;
-  min-width: 280px;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-/* Ensure Identity takes up space */
-div[data-testid="ockIdentity"] {
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  padding: 16px !important;
-}
-
-/* Avoid overlap in Identity children */
-div[data-testid="ockIdentity"]>* {
-  position: relative !important;
-}
-
-/* Fix Disconnect button layout to sit at bottom */
-button[data-testid="ockDisconnectButton"] {
-  position: relative !important;
-  width: 100% !important;
-  margin-top: 0 !important;
-  padding: 16px !important;
-  border-top: 1px solid var(--border-color);
-  border-radius: 0 0 16px 16px !important;
-}
-
-/* Ensure text doesn't overlap */
-span {
-  display: inline-block;
 }

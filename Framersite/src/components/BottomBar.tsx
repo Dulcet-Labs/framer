@@ -11,6 +11,7 @@ import {
     Identity,
     EthBalance,
 } from '@coinbase/onchainkit/identity';
+
 import { useEffect, useState } from 'react';
 
 export function BottomBar() {
@@ -71,9 +72,7 @@ export function BottomBar() {
                 pointerEvents: 'auto'
             }}>
                 <Wallet>
-                    <ConnectWallet
-                        className="wallet-conn-btn"
-                    >
+                    <ConnectWallet className="wallet-conn-btn">
                         <Avatar className="h-6 w-6" />
                         <Name className="text-sm font-medium" />
                     </ConnectWallet>
@@ -81,7 +80,7 @@ export function BottomBar() {
                         <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
                             <Avatar className="h-6 w-6" />
                             <Name className="text-sm font-medium" />
-                            <Address className="text-sm font-medium" />
+                            <Address className="text-sm font-medium text-gray-500 dark:text-gray-400" />
                             <EthBalance className="text-sm font-medium" />
                         </Identity>
                         <WalletDropdownDisconnect />
