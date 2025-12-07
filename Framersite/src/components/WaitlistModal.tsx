@@ -11,22 +11,39 @@ export function WaitlistModal({ isOpen, onClose, onSuccess, onError }: WaitlistM
     const [waitlistEmail, setWaitlistEmail] = useState('');
     const [isJoining, setIsJoining] = useState(false);
 
-    const handleWaitlistSubmit = (e: React.FormEvent) => {
+    const handleWaitlistSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsJoining(true);
 
-        setTimeout(() => {
-            // Simulate error
-            if (waitlistEmail.includes('error')) {
-                setIsJoining(false);
-                onError('Something went wrong. Please try again.');
-                return;
-            }
+        try {
+            // Google Sheets Web App (Free, Unlimited)
+            // See setup instructions in: /scripts/google-sheets-setup.md
+            const GOOGLE_SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyl58egsnsZ6VKtdN7YUO1F45AgZ2Gq4GdpNYjPHtiyhjZcZgXbojiXHOgQBuHZNJVr-A/exec';
 
+            const response = await fetch(GOOGLE_SHEETS_ENDPOINT, {
+                method: 'POST',
+                mode: 'no-cors', // Required for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: waitlistEmail,
+                    timestamp: new Date().toISOString(),
+                    source: 'FramerIDE Waitlist',
+                    userAgent: navigator.userAgent
+                }),
+            });
+
+            // Note: no-cors mode doesn't allow reading response
+            // We assume success if no error is thrown
             setIsJoining(false);
             setWaitlistEmail('');
             onSuccess();
-        }, 1000);
+        } catch (error) {
+            console.error('Waitlist error:', error);
+            setIsJoining(false);
+            onError('Something went wrong. Please try again.');
+        }
     };
 
     return (
