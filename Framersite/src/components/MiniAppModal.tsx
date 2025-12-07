@@ -201,6 +201,7 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
 
     let requestId = 0;
     const pendingRequests = new Map();
+    let currentChainId = '0x2105'; // Base mainnet
 
     // Listen for responses from parent
     window.addEventListener('message', (event) => {
@@ -212,6 +213,10 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
                 if (data.error) {
                     pending.reject(new Error(data.error.message || 'Request failed'));
                 } else {
+                    // Update chainId if this was a chainId request
+                    if (pending.method === 'eth_chainId' && data.result) {
+                        currentChainId = data.result;
+                    }
                     pending.resolve(data.result);
                 }
             }
@@ -219,16 +224,17 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
     });
 
     // Create EIP-1193 compatible provider
-    window.ethereum = {
+    const provider = {
         isMetaMask: false,
         isCoinbaseWallet: true,
         isFramerIDE: true,
+        chainId: currentChainId,
         
         request: async ({ method, params }) => {
             const id = ++requestId;
             
             return new Promise((resolve, reject) => {
-                pendingRequests.set(id, { resolve, reject });
+                pendingRequests.set(id, { resolve, reject, method });
                 
                 // Send request to parent
                 window.parent.postMessage({
@@ -250,30 +256,64 @@ export function MiniAppModal({ miniApp, isAppCollapsed, setMiniApp, setIsAppColl
 
         // Legacy methods for older dapps
         enable: async () => {
-            return window.ethereum.request({ method: 'eth_requestAccounts' });
+            return provider.request({ method: 'eth_requestAccounts' });
         },
 
         send: (methodOrPayload, paramsOrCallback) => {
             if (typeof methodOrPayload === 'string') {
-                return window.ethereum.request({ 
+                return provider.request({ 
                     method: methodOrPayload, 
                     params: paramsOrCallback 
                 });
             }
             // Legacy send with callback
-            return window.ethereum.request(methodOrPayload)
+            return provider.request(methodOrPayload)
                 .then(result => paramsOrCallback(null, { result }))
                 .catch(error => paramsOrCallback(error));
         },
 
         sendAsync: (payload, callback) => {
-            window.ethereum.request(payload)
+            provider.request(payload)
                 .then(result => callback(null, { result }))
                 .catch(error => callback(error));
-        }
+        },
+
+        on: (event, callback) => {
+            // Minimal event emitter for compatibility
+            console.log('[Iframe] Event listener registered:', event);
+        },
+
+        removeListener: () => {},
+        removeAllListeners: () => {}
     };
 
-    // Dispatch event to notify dapps
+    window.ethereum = provider;
+
+    // EIP-6963: Announce provider for Wagmi v3 compatibility
+    const announceProvider = () => {
+        const info = {
+            uuid: 'framer-ide-injected-provider',
+            name: 'FramerIDE',
+            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%230052FF"/></svg>',
+            rdns: 'com.framer.ide'
+        };
+
+        window.dispatchEvent(
+            new CustomEvent('eip6963:announceProvider', {
+                detail: Object.freeze({ info, provider })
+            })
+        );
+    };
+
+    // Announce immediately
+    announceProvider();
+
+    // Listen for discovery requests
+    window.addEventListener('eip6963:requestProvider', () => {
+        announceProvider();
+    });
+
+    // Dispatch legacy events
     window.dispatchEvent(new Event('ethereum#initialized'));
     
     console.log('[Iframe] ✅ Proxy wallet provider injected successfully');
