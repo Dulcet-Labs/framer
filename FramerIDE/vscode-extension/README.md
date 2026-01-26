@@ -1,36 +1,57 @@
-# 🔵 Framer Mini App Preview
+<div align="center">
+  <img src="./media/icon.png" alt="Framer IDE" width="120"/>
+</div>
 
-**The ultimate development companion for building Base Mini Apps directly inside VS Code.**
+# Framer Mini App Preview
 
-Build, test, and iterate on your Base applications without ever leaving your editor. Framer Mini App Preview simulates a mobile environment, giving you instant feedback on your UI/UX as you code.
+A VS Code extension from Framer IDE for building and testing Mini App UIs within Visual Studio Code.
 
----
+## Overview
 
-## ✨ Features
+Framer Mini App Preview is part of the Framer IDE ecosystem, providing an integrated development environment for Mini App UI development. This extension features real-time app simulation and seamless integration with your existing development workflow, enabling developers to build, test, and iterate on Mini App interfaces without context switching between multiple tools.
 
-*   **📱 Native Mobile Simulation**: Preview your app in a realistic mobile frame right next to your code.
-*   **⚡️ Instant Live Reload**: Connects seamlessly to your local development server (e.g., `localhost:3000`).
-*   **🎨 Base-Themed UI**: Designed with the official Base color palette for that premium feel.
-*   **🛠 Developer Focused**: Built by developers, for developers. Debug faster and ship with confidence.
+## Key Features
 
-## 🚀 Getting Started
+- **App Preview Simulation**: Accurate viewport rendering with realistic device frames
+- **Live Development Server Integration**: Real-time synchronization with local development servers
+- **UI-Focused Development**: Perfect for building and testing Mini App interfaces and user experiences
+- **Integrated Development Workflow**: Streamlined debugging and testing within the VS Code environment
 
-1.  **Install the Extension**: Search for "Framer Mini App Preview" in the VS Code Marketplace and install it.
-2.  **Start Your Dev Server**: Run your local app (e.g., `npm run dev` on port 3000).
-3.  **Open the Preview**:
-    *   Open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`).
-    *   Type **`Framer: Start Preview`**.
-    *   Enter your local URL (default is `http://localhost:3000`).
-4.  **Code & Watch**: See your changes reflect instantly in the mobile preview!
+## Installation & Setup
 
-## ⚙️ Requirements
+### Prerequisites
 
-*   VS Code `1.80.0` or higher.
-*   A local web server running your application.
+- Visual Studio Code version 1.80.0 or later
+- Node.js development environment
+- Local development server capability
 
-## 📬 Feedback & Support
+### Installation Steps
 
-We are currently in **closed beta**. If you have feedback, feature requests, or run into bugs, please reach out to the team directly. We are working hard to make this the best tool for Base developers!
+1. Open Visual Studio Code
+2. Navigate to the Extensions marketplace (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Search for "Framer Mini App Preview"
+4. Click "Install" to add the extension to your workspace
+
+### Configuration
+
+1. Start your local development server (typically `npm run dev` or similar)
+2. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+3. Execute the command: `Framer: Start Preview`
+4. Configure your development server URL (default: `http://localhost:3000`)
+5. The preview panel will initialize alongside your code editor
+
+## Usage
+
+Once configured, the extension provides real-time preview capabilities that automatically reflect code changes in the simulation environment. This enables rapid iteration and immediate visual feedback during the development process.
+
+## System Requirements
+
+- **Editor**: Visual Studio Code 1.80.0+
+- **Runtime**: Local web server with HTTP/HTTPS support
+
+## Support & Feedback
+
+This extension is now publicly available as part of the Framer IDE development suite. For technical support, feature requests, or bug reports, please contact the Framer IDE team directly through official channels.
 
 ---
 

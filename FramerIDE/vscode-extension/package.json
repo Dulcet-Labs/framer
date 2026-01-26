@@ -1,14 +1,14 @@
 {
   "name": "framer-mini-app-preview",
   "displayName": "Framer Mini App Preview",
-  "description": "A native VS Code extension to build and test Base Mini Apps.",
-  "version": "0.0.1",
+  "description": "A VS Code extension from Framer IDE for building and testing Mini App UIs.",
+  "version": "0.0.2",
   "publisher": "team-framer",
   "icon": "media/icon.png",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thejamesnick/liteframe"
+    "url": "https://github.com/Dulcet-Labs/framer"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -30,12 +30,13 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -45,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
     "@vscode/test-electron": "^2.3.2",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.41.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
