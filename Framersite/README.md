@@ -1,73 +1,117 @@
-# React + TypeScript + Vite
+# FramerIDE Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The official website for FramerIDE - the first Onchain Development Environment.
 
-Currently, two official plugins are available:
+## 🚀 What is FramerIDE?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+FramerIDE is the first IDE built specifically for onchain development. Stop juggling VS Code, browsers, wallets, terminals, and mobile simulators. Build Base Mini Apps and onchain applications in one unified environment.
 
-## React Compiler
+**Key Features:**
+- Native blockchain simulation
+- Built-in wallet injection
+- Mobile-first Mini App preview
+- Zero context switching
+- Rust-powered performance
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 Tech Stack
 
-## Expanding the ESLint configuration
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite 7
+- **Styling:** Tailwind CSS 4
+- **Web3:** Coinbase OnchainKit + Wagmi
+- **Package Manager:** Yarn 4
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏃‍♂️ Quick Start
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Install dependencies
+yarn install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Start development server
+yarn dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Build for production
+yarn build
+
+# Preview production build
+yarn preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎨 Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Mini App Preview
+The website includes a working Mini App preview modal that:
+- Loads external Mini Apps via iframe
+- Injects wallet provider for testing
+- Supports mobile-responsive preview
+- Handles cross-origin wallet communication
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Wallet Integration
+- Coinbase OnchainKit integration
+- Base network support
+- Wallet connection UI
+- Transaction simulation ready
+
+### Theme Support
+- Light/dark mode toggle
+- System preference detection
+- Smooth theme transitions
+- Base brand colors
+
+## 🔧 Development
+
+### Environment Setup
+```bash
+# Node.js version requirement
+node --version  # Should be 20.19+ or 22.12+
+
+# Install dependencies
+yarn install
 ```
+
+### Available Scripts
+- `yarn dev` - Start development server
+- `yarn build` - Build for production
+- `yarn lint` - Run ESLint
+- `yarn preview` - Preview production build
+
+### Code Style
+- TypeScript strict mode enabled
+- ESLint with React hooks rules
+- Tailwind CSS for styling
+- Component-based architecture
+
+## 🌐 Deployment
+
+The site is optimized for static hosting on platforms like:
+- Vercel
+- Netlify
+- GitHub Pages
+- Base hosting solutions
+
+Build artifacts are generated in the `dist/` directory.
+
+## 🤝 Contributing
+
+This is the marketing site for FramerIDE. For the main IDE development, see the main FramerIDE repository.
+
+### Local Development
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test locally with `yarn dev`
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+## 🔗 Links
+
+- [FramerIDE Main Repo](../FramerIDE/)
+- [Base Documentation](https://docs.base.org)
+- [OnchainKit Docs](https://onchainkit.xyz)
+
+---
+
+**Building the future of onchain development, one commit at a time.** 🔵

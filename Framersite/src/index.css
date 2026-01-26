@@ -260,13 +260,14 @@ select {
   }
 }
 
-/* Responsive adjustments based on provided CSS */
-@media (max-width: 480px) {
+/* Responsive adjustments - Hide mini app modal and wallet on mobile */
+@media (max-width: 768px) {
   .mini-app-modal {
-    width: 100vw;
-    height: 100vh;
-    right: 0;
-    border-radius: 0;
+    display: none !important;
+  }
+  
+  .dev-account-connect {
+    display: none !important;
   }
 }
 

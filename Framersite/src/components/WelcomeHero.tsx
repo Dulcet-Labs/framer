@@ -51,8 +51,8 @@ export function WelcomeHero({ onStartBuilding }: WelcomeHeroProps) {
                     </span>
                 </h1>
                 <p className="welcome-subtitle">
-                    The next gen environment for building DApps & Mini Apps on Base. <br />
-                    Fast, intuitive, and powerful.
+                    FramerIDE is the first Onchain Development Environment. <br />
+                    Build Base Mini Apps without the fragmented workflow.
                 </p>
                 <div className="cta-group">
                     <button onClick={onStartBuilding} className="btn-primary">Start Building</button>
