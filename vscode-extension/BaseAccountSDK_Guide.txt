@@ -1,0 +1,78 @@
+Base Account SDK Integration Guide
+================================
+
+This guide explains how to properly integrate the Base Account SDK (Smart Wallet) into your web application using the CDN method.
+
+1. Include the SDK Script
+-------------------------
+Add the following script tag to the `<head>` or `<body>` of your HTML file. This loads the SDK from the unpkg CDN.
+
+```html
+<script src="https://unpkg.com/@base-org/account/dist/base-account.min.js"></script>
+```
+
+2. Initialize the SDK
+---------------------
+When loaded via the CDN, the SDK exposes a global function `createBaseAccountSDK` directly on the `window` object.
+
+**Important:** Do NOT look for it under `window.base`. While `window.base` exists, it contains other utilities (like `pay`), but the account creation factory is at the top level.
+
+```javascript
+const APP_NAME = 'My Awesome App';
+const APP_LOGO_URL = 'https://example.com/logo.png';
+const CHAIN_ID = 8453; // Base Mainnet
+
+let sdk = null;
+let provider = null;
+
+function initBaseWallet() {
+    // 1. Check if the SDK is loaded
+    if (typeof window.createBaseAccountSDK === 'undefined') {
+        console.error('Base Account SDK not loaded. Check your internet connection or script tag.');
+        return;
+    }
+
+    // 2. Initialize the SDK
+    sdk = window.createBaseAccountSDK({
+        appName: APP_NAME,
+        appLogoUrl: APP_LOGO_URL,
+        appChainIds: [CHAIN_ID]
+    });
+
+    // 3. Get the Ethereum Provider
+    provider = sdk.getProvider();
+    
+    console.log('Base Account SDK initialized successfully');
+}
+```
+
+3. Connect Wallet (Sign In)
+---------------------------
+To connect the user's wallet (or create a new passkey account), use the standard EIP-1193 `eth_requestAccounts` method.
+
+```javascript
+async function connectWallet() {
+    if (!provider) initBaseWallet();
+    if (!provider) return;
+
+    try {
+        const accounts = await provider.request({
+            method: 'eth_requestAccounts'
+        });
+        
+        const userAddress = accounts[0];
+        console.log('Connected:', userAddress);
+        return userAddress;
+    } catch (error) {
+        console.error('User denied connection or error occurred:', error);
+    }
+}
+```
+
+4. Troubleshooting
+------------------
+*   **Error: "Base Account SDK not loaded"**: Ensure the script tag is correct and that you are checking `window.createBaseAccountSDK`, not `window.base.createBaseAccountSDK`.
+*   **CSP Errors**: If you are in a restricted environment (like a VS Code extension), ensure your Content Security Policy (CSP) allows scripts from `https://unpkg.com`.
+
+Example CSP addition:
+`script-src 'self' https://unpkg.com;`
