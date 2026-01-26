@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./media/icon.png" alt="Framer IDE" width="120"/>
+  <img src="https://raw.githubusercontent.com/Dulcet-Labs/framer/main/FramerIDE/vscode-extension/media/icon.png" alt="Framer IDE" width="120"/>
 </div>
 
 # Framer Mini App Preview

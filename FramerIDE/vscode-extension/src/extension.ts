@@ -100,7 +100,7 @@ class BaseFramePanel {
         // Otherwise, create a new panel.
         const panel = vscode.window.createWebviewPanel(
             BaseFramePanel.viewType,
-            'Base Frame Preview',
+            'Framer Preview',
             column || vscode.ViewColumn.One,
             {
                 // Enable javascript in the webview
@@ -241,7 +241,7 @@ class BaseFramePanel {
 
     private _update(initialUrl?: string) {
         const webview = this._panel.webview;
-        this._panel.title = "Base Frame Preview";
+        this._panel.title = "Framer Preview";
         this._panel.webview.html = getWebviewContent(webview, this._extensionUri, initialUrl);
 
         // Restore wallet state

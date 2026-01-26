@@ -2,7 +2,7 @@
   "name": "framer-mini-app-preview",
   "displayName": "Framer Mini App Preview",
   "description": "A VS Code extension from Framer IDE for building and testing Mini App UIs.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "team-framer",
   "icon": "media/icon.png",
   "license": "MIT",
